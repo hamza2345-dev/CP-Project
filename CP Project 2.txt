@@ -1,0 +1,534 @@
+
+#include <iostream>                                                                 //Library for Basic Input output operation
+#include <fstream>                                                                  //Library for file handeling 
+#include <string>                                                                   //Library for using string
+#include<iomanip>                                                                   //Library for apply different spacing and casting functions
+using namespace std;
+
+
+void stock_inrep();                                                                 // Declaration of stock_inrep function
+void purchasing();                                                                  // Declaration of purchasing function
+void stock_display();                                                               // Declaration fo Representation of stock function
+void access_the_product(string& product_1, string& price_1);                        // Declaration of Accessing the stock function
+void remove( string& name_to_remove,  string& price_to_remove);           // Declaration of Function for removing items
+void bill_of_each_sale( string& product, string& price);                 // Declaration of bill of each function file
+void bill_showing();                                                                // Declaration of showing of bill
+void access_display(string& product_3, string& price_3);
+void manager_password();                                                            // Declaration of function for managing passwords of manager
+void seller_password();                                                             // Declaration of function for managing passwords of seller
+bool password_entry(string& Enter_password);                                        // Declaration of function for matching password of manager
+bool password_entry_check(string& Enter_password1);                                 // Declaration of function for matching password of seller
+string price1(const string& item);                                                  // Declaration of price1 function
+
+
+
+int main()                                                                          //Main function used to access the portfolios of specific handlers
+{
+    char entry;
+    top:
+    cout << "What is your status (manager: m/M, seller: s/S): ";
+    cin >> entry;
+    cout << "|-----------------------------------------------------------------------------------------------------------------|" << "\n";
+
+    if (entry == 'm'||entry=='M')                                                               //Using conditional statement for  
+    {
+        bool y = true;
+        main_1:
+        string Enter_password;                                                     //String for entering the password
+        string got="E";
+        cout << "Enter Password( press E )=";
+        cin >> Enter_password;
+         if (Enter_password == got)
+         {
+            goto top;
+         }
+        bool x = password_entry(Enter_password);                                   //Using boolean datatype for matching the entered password
+        if (x == y)
+        {
+            char choice;
+            sell:
+            cout << "1)Login to your domain(press D)" << endl;                      //Login to domain
+            cout << "2)Reset Password(press R)" << endl;                            //Access for resetting the password
+            cout << "3)Logout(press L)\n";
+            cout << "Enter the request=";                                          //Enter the requirement
+            cin >> choice;
+     cout << "|----------------------------------------------------------------------------------------------------------------|" << "\n";
+            if (choice == 'D')                                                     //Conditional statement for accessing the liabilities
+            {
+                pro:
+                cout << "1)Insert the New Stock(press N)=\n";
+                cout << "2)Show the saved stock(press S)=\n";
+                cout << "3)Back(press B)=\n";
+                cout << "Enter the request=";
+                char choice_1;
+                cin >> choice_1;
+     cout << "|-----------------------------------------------------------------------------------------------------------------|" << "\n";
+                if (choice_1 == 'N')                                                   //Conditional statement for accessing stock_in function
+                {
+                    stock_inrep();                                                 //Calling the stock_in function
+                    goto pro;
+                }
+                else if (choice_1 == 'S')                                              //Condtional statement for accessing the stockdisplay function
+                {
+                    stock_display();                                              //Calling stockdisplay function
+                    goto pro;
+                }
+                else if (choice_1 == 'B')
+                {
+                    goto sell;
+                }
+
+            }
+            else if (choice == 'R')                                               //Conditional statement for accessing the password manager
+            {
+                manager_password();                                               //Calling the  manager_passwword function
+                goto sell;
+            }
+            else if (choice == 'L')
+            {
+                goto main_1;
+            }
+        }
+    
+        else
+        {
+            cout << "Entered the wrong password";
+            goto main_1;
+        }
+    
+    }
+    else if (entry == 's'||entry=='S')                                                        //Conditional statement for Accessing the seller liabilities
+    {
+        main_2:
+        string password_1;
+        string to="E";
+        bool x;
+        cout << "Enter password(E for exit)=";
+        cin >> password_1;
+        cout << "\n";
+ cout << "|--------------------------------------------------------------------------------------------------------------------------|\n";
+         
+        if (password_1 == to)
+        {
+            goto top;
+        }
+        x = password_entry_check(password_1);
+        if (x == true)
+        {
+            sell_1:
+            char E;
+            cout << "1)Login to your domain(press D)\n";
+            cout << "2)Reset Password (press P)\n";
+            cout << "3)Logout(press L)\n";
+            cout << "Enter request=\t";                                          //Prompt the user to enter the request
+            cin >> E;
+ cout << "|------------------------------------------------------------------------------------------------------------------------|\n";
+            if (E == 'D')
+            {
+                pro_1:
+                char a;
+                cout << "1)Selling page(press S)\n";
+                cout << "2)Dislplay daily sale record(press D)\n";
+                cout << "3)Back(press B)\n";
+                cout << "Enter request=\t";                                      //Prompt the user to enter the request
+                cin >> a;
+ cout << "|------------------------------------------------------------------------------------------------------------------------|\n";
+                if (a == 'S')
+                {
+
+                    purchasing();                                                 // Calling the purchasing function
+                    goto pro_1;
+                }
+                else if (a == 'D')
+                {
+                    bill_showing();                                              // Calling the Bill showing function
+                    goto pro_1;
+                }
+                else if (a == 'B')
+                {
+                    goto sell_1;
+                }
+            }
+            else if (E == 'P')
+            {
+                seller_password();                                                // Calling the seller password Manager function
+                goto sell_1;
+            }
+            else if (E == 'L')
+            {
+                goto main_2;
+            }
+        }
+        else
+        {
+            cout << "Enter the correct Password";
+ cout << "|------------------------------------------------------------------------------------------------------------------------|\n";
+            goto main_2;
+        }
+    }
+    else {
+        cout << "Invalid input. Please enter 'm' for manager or 's' for seller.\n";
+ cout << "|-------------------------------------------------------------------------------------------------------------------------|\n";
+        goto top;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+void stock_display()                                                               //Function definition for stock_display function
+{
+    ifstream display_file("F:/File Handeling files/stockin.txt", ios::in);
+    if (!display_file)
+    {
+        cout << "File cannot be opened" << endl;
+        exit(0);
+    }
+    string product_1;
+    string price_1;
+    
+    while (display_file >> product_1>> price_1)
+    {
+        access_the_product(product_1, price_1);
+    }
+    display_file.close(); 
+    cout << "|---------------------------------------------------------------------------------------------------------------------|\n";
+}
+
+
+void access_the_product(string& product_1, string& price_1)                       //Function definition for accessing the specific stock and its price
+{
+    cout << (product_1) << setw(5) << (price_1) << endl;
+
+}
+
+                                                                                 // Function to add products to the stock file
+void stock_inrep()
+{
+    ofstream stockin;                                                            // File stream to write to file
+    string product, price;
+
+    cout << "Product(Type zero to end)\n";
+    cout << "Price\n";
+
+    do {
+        cin >> product;
+        
+
+        if (product == "zero") break;                                           // Exit condition
+        cin >> price;
+
+                                                                                // Append the product and price to the stock file
+        stockin.open("F:/File Handeling files/stockin.txt", ios::app);
+        if (!stockin) {
+            cerr << "Error opening file.\n";
+            return;
+        }
+
+        stockin << (product) << " " << price << endl;
+        stockin.close();
+
+        
+    } while (true);
+    cout << "|---------------------------------------------------------------------------------------------------------------------|\n";
+}
+void purchasing()                                                              //Function definition for handeling purchasing stock
+{
+    string item;
+    string product_2;
+    string matched_price;
+    cout << "Enter the name of the item to check price (or type 'zero' to stop): ";
+    double sum = 0;
+    do {
+        cin >> item;
+        cout << "\t";
+        if (item == "zero") break;                                          // Exit condition
+
+        string price = price1(item);                                        // Call price1 to get the price
+        if (price != "not found") {
+            cout  << price ;
+            matched_price = price;
+            sum += stod(price);
+            bill_of_each_sale(item,price);
+        }
+        else {
+            cout << "Item not found in stock.\n";
+        }
+        remove(item, matched_price);                                      //Call for function to remove products
+    } while (true);
+    cout << "Your total bill is=" << sum;
+    cout << "|--------------------------------------------------------------------------------------------------------------------------|\n";
+}
+
+
+
+
+string price1(const string& item)                                        //Function definition for accessing price of sales stock 
+{
+    ifstream stockin("F:/File Handeling files/stockin.txt");
+    if (!stockin) {
+        cerr << "Error opening file.\n";
+        return "not found";
+    }
+
+    string product, price, matched_price, item_1;
+    while (stockin >> product >> price) {                               // Read product and price from file
+        if (product == item) {
+            stockin.close();
+            return price;                                               // Return price if item matches
+        }
+    }
+
+    stockin.close();
+                                                                       //Calling the stockdeletion function
+    return "not found";                                               // Return "not found" if no match
+}
+
+
+
+
+void remove(const string& name_to_remove, const string& price_to_remove) {
+    const string stockFilePath = "F:/File Handeling files/stockin.txt";
+    const string tempFilePath = "F:/File Handeling files/temp.txt";
+
+    ifstream inputFile(stockFilePath);
+    if (!inputFile) {
+        cerr << "Error opening stock file for reading: " << stockFilePath << endl;
+        return;
+    }
+
+    ofstream tempFile(tempFilePath);
+    if (!tempFile) {
+        cerr << "Error creating temporary file: " << tempFilePath << endl;
+        return;
+    }
+
+    string product, price;
+    bool itemRemoved = false;
+
+    while (inputFile >> product >> price) {
+        if (product == name_to_remove && price == price_to_remove) {
+            itemRemoved = true; // Mark that the item was found and removed
+            continue;           // Skip this line
+        }
+        tempFile << product << " " << price << endl;
+    }
+
+    inputFile.close();
+    tempFile.close();
+
+    if (itemRemoved) {
+        // Replace original file with temp file
+        if (std::remove(stockFilePath.c_str()) != 0) {
+            cerr << "Error deleting the original file: " << stockFilePath << endl;
+            std::remove(tempFilePath.c_str()); // Cleanup temp file
+            return;
+        }
+
+        if (std::rename(tempFilePath.c_str(), stockFilePath.c_str()) != 0) {
+            cerr << "Error renaming the temporary file: " << tempFilePath << " to " << stockFilePath << endl;
+            return;
+        }
+
+        cout << "Item removed successfully.\n";
+    }
+    else {
+        // Item not found; cleanup temporary file
+        std::remove(tempFilePath.c_str());
+        cout << "Item not found in the file.\n";
+    }
+}
+
+
+
+
+void manager_password()                                               //Function definition for managing passwords
+{
+    mng:
+    bool y;
+    string test = "B";
+    string entry_1;
+    cout << "Enter the password=\n";
+    cin >> entry_1;
+    y = password_entry(entry_1);
+    if (y = true)
+    {
+        char choice;
+        cout << "1)New Password(press N)\n2)Existing password(press E)\n3)Back(press B)\n4)Enter to access\t" << endl;
+        cin >> choice;
+        if (choice == 'N')
+        {
+            string Newpassword;
+            cout << "Enter the new password=";
+            cin >> Newpassword;
+            ofstream pass;
+            pass.open("F:/File Handeling files/passwordmanager.txt", ios::out);
+            pass << Newpassword << endl;
+            pass.close();
+            cout << "New Password set Successfully\n";
+ cout << "|---------------------------------------------------------------------------------------------------------------------|\n";
+        }
+        else if (choice == 'E')
+        {
+            string Existingpassword;
+            cout << "Add the new password=";
+            cin >> Existingpassword;
+            cout << "\n";
+            ofstream pass_1;
+            pass_1.open("F:/File Handeling files/passwordmanager.txt", ios::app);
+            pass_1 << Existingpassword;
+            pass_1.close();
+            cout << "New password added successfully\n";
+ cout << "|--------------------------------------------------------------------------------------------------------------------------|\n;";
+        }
+        else if (choice == 'B')
+        {
+            goto mng;
+        }
+    }
+
+    else
+    {
+        cout << "Enter the correct password";
+        goto mng;
+    }
+}
+
+
+
+
+
+bool password_entry(string& Enter_password)                                           //Definition of password_entry function
+{
+    ifstream pass;
+    pass.open("F:/File Handeling files/passwordmanager.txt");                         //Opening the passwordmanager.txt file for matching the password
+    if (!pass)
+    {
+        return "file_not_accessed";
+    }
+
+    string Newpassword;
+    while (pass >> Newpassword)
+    {
+        if (Newpassword == Enter_password)
+        {
+            pass.close();                                                            //Closes file if password  matches
+            return true;
+            break;
+        }
+    }
+    pass.close();                            //Closed file if password not matches
+    return false;
+}
+
+
+
+
+
+void seller_password()                                                               //Definition of managing the passwords
+{
+    sell_2:
+    bool y;
+    string entry_2;
+    cout << "Enter the password=\n";                                                 //Entering password for accesssing the changing password portion
+    cin >> entry_2;
+    y=password_entry_check(entry_2);
+    if (y == true)
+    {
+        char choice;
+        cout << "1)New Passwords(Press N)\n2)Existing Passwords(Press E)\nEnter to Access\t";     //Modules for user to select
+        cin >> choice;
+        if (choice == 'N')
+        {
+            string Newpassword;
+            cout << "Enter the new password";
+            cin >> Newpassword;
+            ofstream pass_2;
+            pass_2.open("F:/File Handeling files/seller.txt", ios::out);             //Opening seller.txt file for making new password
+            pass_2 << Newpassword;
+            pass_2.close();                                                          //Inserts new password
+            cout << "New password saved successfully";                               //Closing seller.txt file
+        }
+        else if (choice == 'E')
+        {
+            string Existing_password;
+            cout << "Add New password in existing";
+            cin >> Existing_password;
+            ofstream Pass_2;
+            Pass_2.open("F:/File Handeling files/seller.txt", ios::app);            //Opening seller.txt file for adding new password
+            Pass_2 << Existing_password;                                            //Inserted added password
+            Pass_2.close();                                                         //Closing seller.txt file
+            cout << "New password added successfully";
+
+        }
+        
+    }
+    else
+    {
+        cout << "Enter the correct password";
+        goto sell_2;
+    }
+}
+
+
+
+
+bool password_entry_check(string& Enter_password1)                             //Definition of seller password check function
+{
+    ifstream pass_2;
+    pass_2.open("F:/File Handeling files/seller.txt");                        //Opening seller.txt file for password verification
+    if (!pass_2)
+    {
+        cout << "File not accessed";
+    }
+    string password2;
+
+    while (pass_2 >> password2)
+    {
+        if (Enter_password1 == password2)
+        {
+            pass_2.close();                                                 //Closing the seller.txt file if password matches
+            return true;
+            break;
+        }
+    }
+    pass_2.close();                                                         //Closing the seller.txt file if password doesn't matches
+    return false;
+}
+void bill_of_each_sale( string& product,  string& price)          //Definition for making the bill of everday sale
+{
+    ofstream bill;
+    bill.open("F:/File Handeling files/bill.txt", ios::app);               //Opening bill.txt file for inserting data in it
+    bill << product << price;                                              //Inserting data
+    bill.close();                                                          //Closing bill.txt file
+    cout << endl;
+
+}
+
+void bill_showing()                                                        //Definition for showing the bill of everyday sale
+{
+    cout << "Product" << setw(6) << "Price\n";
+    ifstream bill_1("F:/File Handeling files/bill.txt",ios::in);                       //Opening bill.txt file for reading data
+    if (!bill_1)
+    {
+        cout << "File cannot be opened";
+        exit(0);
+    }
+    string product_2;
+    string price_2;
+    while (bill_1 >> product_2>> price_2)
+    {
+        access_display(product_2, price_2);                                  //Prints the products and price sold
+    }
+    bill_1.close();                                                        //Closing bill.txt file
+    cout << "|------------------------------------------------------------------------------------------------------------------------|\n";
+}
+void access_display(string& product_3, string& price_3)
+{
+    cout << product_3 << setw(5) << price_3<<endl;
+}
